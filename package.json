@@ -1,4 +1,12 @@
 {
+  "name": "armeria-backend",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "nodemon src/servidor.js",
+    "start": "node src/servidor.js"
+  },
   "dependencies": {
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
@@ -9,10 +17,5 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.11"
-  },
-  "scripts": {
-  "dev": "nodemon src/servidor.js",
-  "start": "node src/servidor.js"
-}
-
+  }
 }
