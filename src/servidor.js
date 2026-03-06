@@ -10,11 +10,14 @@ import marcasRutas from "./routes/marcas.routes.js";
 import testRutas from "./routes/test.routes.js";
 import filtrosRutas from "./routes/filtros.routes.js";
 
+// ✅ Admin
+import adminRutas from "./routes/admin.routes.js";
+
 dotenv.config();
 
-const app = express(); // 👈 PRIMERO se declara app
+const app = express();
 
-app.use(cors({ origin: process.env.CORS_ORIGIN }));
+app.use(cors({ origin: process.env.CORS_ORIGIN || "*" }));
 app.use(helmet());
 app.use(express.json());
 app.use(morgan("dev"));
@@ -22,16 +25,15 @@ app.use(morgan("dev"));
 app.get("/health", (req, res) => {
   res.json({ ok: true, servicio: "armeria-backend" });
 });
-console.log("testRutas:", typeof testRutas);
-console.log("productosRutas:", typeof productosRutas);
-console.log("categoriasRutas:", typeof categoriasRutas);
-console.log("marcasRutas:", typeof marcasRutas);
 
-app.use("/api/test", testRutas); // 👈 ahora sí
+app.use("/api/test", testRutas);
 app.use("/api/productos", productosRutas);
 app.use("/api/categorias", categoriasRutas);
 app.use("/api/marcas", marcasRutas);
 app.use("/api/filtros", filtrosRutas);
+
+// ✅ Panel admin (protegido por token)
+app.use("/api/admin", adminRutas);
 
 app.use((req, res) => {
   res.status(404).json({ ok: false, error: "Ruta no encontrada" });
