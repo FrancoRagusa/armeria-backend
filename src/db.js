@@ -1,8 +1,8 @@
-// src/db.js
 import pkg from "pg";
 import dotenv from "dotenv";
 
 dotenv.config();
+
 const { Pool } = pkg;
 
 export const pool = new Pool({
@@ -13,11 +13,21 @@ export const pool = new Pool({
   port: Number(process.env.DB_PORT || 5432),
 });
 
-// helper para consultar siempre en tu schema
+function getSafeSchemaName() {
+  const schema = process.env.DB_SCHEMA || "public";
+
+  if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(schema)) {
+    throw new Error("DB_SCHEMA inválido");
+  }
+
+  return schema;
+}
+
 export async function consulta(texto, params = []) {
   const cliente = await pool.connect();
+
   try {
-    const schema = process.env.DB_SCHEMA || "public";
+    const schema = getSafeSchemaName();
     await cliente.query(`SET search_path TO ${schema}, public;`);
     const res = await cliente.query(texto, params);
     return res;
